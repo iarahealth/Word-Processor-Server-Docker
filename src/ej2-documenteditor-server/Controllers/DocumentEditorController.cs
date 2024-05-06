@@ -380,6 +380,78 @@ namespace EJ2DocumentEditorServer.Controllers
             stream.Dispose();
             return document;
         }
+        
+        [AcceptVerbs("Post")]
+        [HttpPost]
+        [EnableCors("AllowAllOrigins")]
+        [Route("ExportSFDT")]
+        public FileStreamResult ExportSFDT([FromBody] SaveParameter data)
+        {
+            string name = data.FileName;
+            string format = RetrieveFileType(name);
+            if (string.IsNullOrEmpty(name))
+            {
+                name = "Document1.doc";
+            }
+            WDocument document = WordDocument.Save(data.Content);
+            return SaveDocument(document, format, name);
+        }
+
+        public class SaveParameter
+        {
+            public string Content { get; set; }
+            public string FileName { get; set; }
+        }
+
+        private string RetrieveFileType(string name)
+        {
+            int index = name.LastIndexOf('.');
+            string format = index > -1 && index < name.Length - 1 ?
+                name.Substring(index) : ".doc";
+            return format;
+        }
+
+        private FileStreamResult SaveDocument(WDocument document, string format, string fileName)
+        {
+            Stream stream = new MemoryStream();
+            string contentType = "";
+            if (format == ".pdf")
+            {
+                contentType = "application/pdf";
+            }
+            else
+            {
+                WFormatType type = GetWFormatType(format);
+                switch (type)
+                {
+                    case WFormatType.Rtf:
+                        contentType = "application/rtf";
+                        break;
+                    case WFormatType.WordML:
+                        contentType = "application/xml";
+                        break;
+                    case WFormatType.Html:
+                        contentType = "application/html";
+                        break;
+                    case WFormatType.Dotx:
+                        contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.template";
+                        break;
+                    case WFormatType.Doc:
+                        contentType = "application/msword";
+                        break;
+                    case WFormatType.Dot:
+                        contentType = "application/msword";
+                        break;
+                }
+                document.Save(stream, type);
+            }
+            document.Close();
+            stream.Position = 0;
+            return new FileStreamResult(stream, contentType)
+            {
+                FileDownloadName = fileName
+            };
+        }
     }
 
 }
