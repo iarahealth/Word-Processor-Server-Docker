@@ -298,6 +298,8 @@ namespace EJ2DocumentEditorServer.Controllers
                     return WFormatType.WordML;
                 case ".odt":
                     return WFormatType.Odt;
+                case ".html":
+                    return WFormatType.Html;         
                 default:
                     throw new NotSupportedException("EJ2 DocumentEditor does not support this file format.");
             }
@@ -388,11 +390,11 @@ namespace EJ2DocumentEditorServer.Controllers
         public FileStreamResult ExportSFDT([FromBody] SaveParameter data)
         {
             string name = data.FileName;
-            string format = RetrieveFileType(name);
             if (string.IsNullOrEmpty(name))
             {
                 name = "Document1.doc";
             }
+            string format = RetrieveFileType(name);
             WDocument document = WordDocument.Save(data.Content);
             return SaveDocument(document, format, name);
         }
