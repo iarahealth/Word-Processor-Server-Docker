@@ -396,6 +396,7 @@ namespace EJ2DocumentEditorServer.Controllers
             }
             string format = RetrieveFileType(name);
             WDocument document = WordDocument.Save(data.Content);
+            document.SaveOptions.OptimizeRtfFileSize = true;
             return SaveDocument(document, format, name);
         }
 
