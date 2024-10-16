@@ -397,6 +397,7 @@ namespace EJ2DocumentEditorServer.Controllers
             string format = RetrieveFileType(name);
             WDocument document = WordDocument.Save(data.Content);
             document.SaveOptions.OptimizeRtfFileSize = true;
+            document.SaveOptions.HtmlExportCssStyleSheetType = CssStyleSheetType.Inline;
             return SaveDocument(document, format, name);
         }
 
