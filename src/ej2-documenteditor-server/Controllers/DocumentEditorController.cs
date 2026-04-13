@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Syncfusion.EJ2.DocumentEditor;
+using Syncfusion.DocIO.DLS;
 using WDocument = Syncfusion.DocIO.DLS.WordDocument;
 using WFormatType = Syncfusion.DocIO.FormatType;
 using Syncfusion.EJ2.SpellChecker;
@@ -299,7 +300,7 @@ namespace EJ2DocumentEditorServer.Controllers
                 case ".odt":
                     return WFormatType.Odt;
                 case ".html":
-                    return WFormatType.Html;         
+                    return WFormatType.Html;
                 default:
                     throw new NotSupportedException("EJ2 DocumentEditor does not support this file format.");
             }
@@ -382,7 +383,7 @@ namespace EJ2DocumentEditorServer.Controllers
             stream.Dispose();
             return document;
         }
-        
+
         [AcceptVerbs("Post")]
         [HttpPost]
         [EnableCors("AllowAllOrigins")]
